@@ -10,7 +10,7 @@ import UIKit
 
 class AppCoordinator {
     func startUp(in window: UIWindow) {
-        let vc = ViewController()
+        let vc = QuizViewController()
         window.rootViewController = vc
         window.makeKeyAndVisible()
     }

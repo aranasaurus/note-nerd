@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  QuizViewController.swift
 //  NoteNerd
 //
 //  Created by Ryan Arana on 2/17/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class QuizViewController: UIViewController {
     private let notes: UISegmentedControl = UISegmentedControl()
     private let accidentals: ToggleableSegmentedControl = ToggleableSegmentedControl()
     private let answerLabel: UILabel = UILabel()
