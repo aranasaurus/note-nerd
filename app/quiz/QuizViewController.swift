@@ -9,7 +9,9 @@
 import UIKit
 
 class QuizViewController: UIViewController {
+    private var rng = SystemRandomNumberGenerator()
     var engine: QuizEngine = QuizEngine()
+
     private let questionLabel: UILabel = UILabel()
     private let notes: UISegmentedControl = UISegmentedControl()
     private let accidentals: ToggleableSegmentedControl = ToggleableSegmentedControl()
@@ -90,7 +92,7 @@ class QuizViewController: UIViewController {
             submit.centerXAnchor.constraint(equalTo: view.readableContentGuide.centerXAnchor)
         ])
 
-        setUp(for: engine.generate())
+        nextQuestion()
     }
 
     @objc private func answerChanged() {
@@ -102,6 +104,19 @@ class QuizViewController: UIViewController {
         submit.isEnabled = true
         answerLabel.text = notes.titleForSegment(at: notes.selectedSegmentIndex)
 
+        defer {
+            if answerLabel.text!.starts(with: "C") || answerLabel.text!.starts(with: "F") {
+                accidentals.setEnabled(false, forSegmentAt: 0)
+            } else {
+                accidentals.setEnabled(true, forSegmentAt: 0)
+            }
+            if answerLabel.text!.starts(with: "B") || answerLabel.text!.starts(with: "E") {
+                accidentals.setEnabled(false, forSegmentAt: 1)
+            } else {
+                accidentals.setEnabled(true, forSegmentAt: 1)
+            }
+        }
+
         guard accidentals.selectedSegmentIndex != UISegmentedControl.noSegment,
             let accidental = accidentals.titleForSegment(at: accidentals.selectedSegmentIndex)
             else { return }
@@ -109,12 +124,21 @@ class QuizViewController: UIViewController {
         answerLabel.text = answerLabel.text?.appending(accidental)
     }
 
-    func setUp(for question: QuizEngine.Question) {
+    func nextQuestion() {
+        let question = QuizEngine.Question.random(using: &rng)
+        engine.add(question: question)
+
         questionLabel.text = question.description
+        resetAnswerControls()
+    }
+
+    func resetAnswerControls() {
         answerLabel.text = "?"
         submit.isEnabled = false
         notes.selectedSegmentIndex = UISegmentedControl.noSegment
         accidentals.selectedSegmentIndex = UISegmentedControl.noSegment
+        accidentals.setEnabled(true, forSegmentAt: 0)
+        accidentals.setEnabled(true, forSegmentAt: 1)
     }
 
     @objc private func checkAnswer() {
@@ -123,7 +147,7 @@ class QuizViewController: UIViewController {
         if engine.submit(note) {
             let alert = UIAlertController(title: "Correct!", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "🎉", style: .cancel, handler: { _ in
-                self.setUp(for: self.engine.generate())
+                self.nextQuestion()
             }))
             present(alert, animated: true)
         } else {

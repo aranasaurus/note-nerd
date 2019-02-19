@@ -21,7 +21,12 @@ enum Operation: CustomStringConvertible {
     case sub(UInt)
 
     static func random() -> Operation {
-        let n = UInt.random(in: 1..<7)
-        return Bool.random() ? .add(n) : .sub(n)
+        var rng = SystemRandomNumberGenerator()
+        return Operation.random(using: &rng)
+    }
+
+    static func random<T: RandomNumberGenerator>(using generator: inout T) -> Operation {
+        let n = UInt.random(in: 1..<7, using: &generator)
+        return Bool.random(using: &generator) ? .add(n) : .sub(n)
     }
 }

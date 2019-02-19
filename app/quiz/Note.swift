@@ -119,7 +119,13 @@ extension Note {
     }
 
     static func random() -> Note {
-        let note = Note(ordinal: Int.random(in: 0..<12), ascending: Bool.random())
-        return note
+        var rng = SystemRandomNumberGenerator()
+        return Note.random(using: &rng)
+    }
+
+    static func random<T: RandomNumberGenerator>(using generator: inout T) -> Note {
+        let ordinal = Int.random(in: 0..<12, using: &generator)
+        let asc = Bool.random(using: &generator)
+        return Note(ordinal: ordinal, ascending: asc)
     }
 }

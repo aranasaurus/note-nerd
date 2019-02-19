@@ -17,26 +17,35 @@ class QuizEngine {
         var description: String {
             return "\(note.name) \(op)"
         }
+
+        static func random() -> Question {
+            var rng = SystemRandomNumberGenerator()
+            return Question.random(using: &rng)
+        }
+
+        static func random<T: RandomNumberGenerator>(using generator: inout T) -> Question {
+            let note = Note.random(using: &generator)
+            let op = Operation.random(using: &generator)
+            return Question(note: note, op: op)
+        }
     }
 
-    var questions = [Question]()
-    var answers = [Note]()
-    var attempts = 0
+    private(set) var questions = [Question]()
+    private(set) var answers = [[Note]]()
 
-    func generate() -> Question {
-        let q = Question(note: Note.random(), op: Operation.random())
-        questions.append(q)
-        return q
+    func add(question: Question) {
+        questions.append(question)
+        answers.append([])
     }
 
     func submit(_ answer: Note) -> Bool {
         guard let q = questions.last else { return false }
 
-        attempts += 1
-
-        guard answer == q.result else { return false }
-
+        let i = questions.endIndex.advanced(by: -1)
+        var answers = self.answers[i]
         answers.append(answer)
-        return true
+        self.answers[i] = answers
+
+        return answer == q.result
     }
 }
