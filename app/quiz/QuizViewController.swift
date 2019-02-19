@@ -24,6 +24,7 @@ class QuizViewController: UIViewController {
         questionLabel.translatesAutoresizingMaskIntoConstraints = false
         questionLabel.textAlignment = .center
         questionLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle).withSize(125)
+        questionLabel.adjustsFontSizeToFitWidth = true
         view.addSubview(questionLabel)
         NSLayoutConstraint.activate([
             questionLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
@@ -61,15 +62,17 @@ class QuizViewController: UIViewController {
         submit.translatesAutoresizingMaskIntoConstraints = false
         submit.setTitle("GO!", for: .normal)
         submit.setTitleColor(.white, for: .normal)
+        submit.setTitleColor(view.backgroundColor, for: .disabled)
         submit.titleLabel?.font = UIFont.boldSystemFont(ofSize: 60)
         submit.setTitleShadowColor(UIColor(named: "pink"), for: .normal)
+        submit.setTitleShadowColor(view.backgroundColor, for: .disabled)
         submit.titleLabel?.shadowOffset = CGSize(width: 3, height: 3)
         submit.addTarget(self, action: #selector(checkAnswer), for: .touchUpInside)
         submit.isEnabled = false
         view.addSubview(submit)
 
         NSLayoutConstraint.activate([
-            answerLabel.centerYAnchor.constraint(equalTo: view.readableContentGuide.centerYAnchor),
+            answerLabel.topAnchor.constraint(equalTo: view.readableContentGuide.centerYAnchor, constant: 8),
             answerLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             answerLabel.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
 
@@ -83,7 +86,7 @@ class QuizViewController: UIViewController {
             accidentals.trailingAnchor.constraint(equalTo: notes.trailingAnchor),
             accidentals.heightAnchor.constraint(equalTo: notes.heightAnchor, multiplier: 0.66),
 
-            submit.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            submit.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
             submit.centerXAnchor.constraint(equalTo: view.readableContentGuide.centerXAnchor)
         ])
 
