@@ -91,6 +91,15 @@ struct Note {
         let ordinal = root.value + accidentalValue
         self.ordinal = Note.calcOrdinal(ordinal)
     }
+
+    func applying(_ operation: Operation) -> Note {
+        switch operation {
+        case .add(let interval):
+            return Note(ordinal: ordinal + Int(interval), ascending: ascending)
+        case .sub(let interval):
+            return Note(ordinal: ordinal - Int(interval), ascending: ascending)
+        }
+    }
 }
 
 extension Note: Equatable {

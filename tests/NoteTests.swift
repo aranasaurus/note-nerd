@@ -59,4 +59,13 @@ class NoteTests: XCTestCase {
         note.ascending = false
         XCTAssertEqual(note.name, "A")
     }
+
+    func testApplyOperation() {
+        let note = Note(ordinal: 0, ascending: true)
+
+        XCTAssertEqual(note.applying(.add(1)).ordinal, 1)
+        XCTAssertEqual(note.applying(.add(12)), note)
+        XCTAssertEqual(note.applying(.sub(1)).ordinal, 11)
+        XCTAssertEqual(note.applying(.sub(12)), note)
+    }
 }
