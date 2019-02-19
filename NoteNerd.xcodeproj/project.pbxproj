@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F9586E6F221B8E1C00382193 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9586E6E221B8E1C00382193 /* Note.swift */; };
+		F9586E71221B934000382193 /* NoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9586E70221B934000382193 /* NoteTests.swift */; };
 		F9BAA42B221A692800985921 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BAA42A221A692800985921 /* AppDelegate.swift */; };
 		F9BAA42D221A692800985921 /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BAA42C221A692800985921 /* QuizViewController.swift */; };
 		F9BAA432221A692C00985921 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BAA431221A692C00985921 /* Assets.xcassets */; };
 		F9BAA435221A692C00985921 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BAA433221A692C00985921 /* LaunchScreen.storyboard */; };
-		F9BAA440221A692C00985921 /* NoteNerdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BAA43F221A692C00985921 /* NoteNerdTests.swift */; };
 		F9C91882221A6A4900F13F45 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C91881221A6A4900F13F45 /* AppCoordinator.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F9586E6E221B8E1C00382193 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		F9586E70221B934000382193 /* NoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTests.swift; sourceTree = "<group>"; };
 		F9BAA427221A692800985921 /* NoteNerd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoteNerd.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BAA42A221A692800985921 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BAA42C221A692800985921 /* QuizViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewController.swift; sourceTree = "<group>"; };
@@ -33,7 +36,6 @@
 		F9BAA434221A692C00985921 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F9BAA436221A692C00985921 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F9BAA43B221A692C00985921 /* NoteNerdTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NoteNerdTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F9BAA43F221A692C00985921 /* NoteNerdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteNerdTests.swift; sourceTree = "<group>"; };
 		F9BAA441221A692C00985921 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F9C91881221A6A4900F13F45 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -69,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				F9BAA42C221A692800985921 /* QuizViewController.swift */,
+				F9586E6E221B8E1C00382193 /* Note.swift */,
 			);
 			path = quiz;
 			sourceTree = "<group>";
@@ -77,7 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				F9BAA429221A692800985921 /* NoteNerd */,
-				F9BAA43E221A692C00985921 /* NoteNerdTests */,
+				F9BAA43E221A692C00985921 /* tests */,
 				F9BAA428221A692800985921 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -104,13 +107,12 @@
 			path = app;
 			sourceTree = "<group>";
 		};
-		F9BAA43E221A692C00985921 /* NoteNerdTests */ = {
+		F9BAA43E221A692C00985921 /* tests */ = {
 			isa = PBXGroup;
 			children = (
-				F9BAA43F221A692C00985921 /* NoteNerdTests.swift */,
 				F9BAA441221A692C00985921 /* Info.plist */,
+				F9586E70221B934000382193 /* NoteTests.swift */,
 			);
-			name = NoteNerdTests;
 			path = tests;
 			sourceTree = "<group>";
 		};
@@ -217,6 +219,7 @@
 				F9C91882221A6A4900F13F45 /* AppCoordinator.swift in Sources */,
 				F9BAA42D221A692800985921 /* QuizViewController.swift in Sources */,
 				F9BAA42B221A692800985921 /* AppDelegate.swift in Sources */,
+				F9586E6F221B8E1C00382193 /* Note.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,7 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F9BAA440221A692C00985921 /* NoteNerdTests.swift in Sources */,
+				F9586E71221B934000382193 /* NoteTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,7 +416,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 356X99UH85;
-				INFOPLIST_FILE = NoteNerdTests/Info.plist;
+				INFOPLIST_FILE = tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -434,7 +437,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 356X99UH85;
-				INFOPLIST_FILE = NoteNerdTests/Info.plist;
+				INFOPLIST_FILE = tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
