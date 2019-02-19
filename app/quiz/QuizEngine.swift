@@ -9,10 +9,14 @@
 import Foundation
 
 class QuizEngine {
-    struct Question {
+    struct Question: CustomStringConvertible {
         let note: Note
         let op: Operation
         var result: Note { return note.applying(op) }
+
+        var description: String {
+            return "\(note.name) \(op)"
+        }
     }
 
     var questions = [Question]()

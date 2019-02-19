@@ -9,6 +9,8 @@
 import UIKit
 
 class QuizViewController: UIViewController {
+    var engine: QuizEngine = QuizEngine()
+    private let questionLabel: UILabel = UILabel()
     private let notes: UISegmentedControl = UISegmentedControl()
     private let accidentals: ToggleableSegmentedControl = ToggleableSegmentedControl()
     private let answerLabel: UILabel = UILabel()
@@ -19,9 +21,7 @@ class QuizViewController: UIViewController {
 
         view.backgroundColor = UIColor(named: "yellow")
 
-        let questionLabel = UILabel()
         questionLabel.translatesAutoresizingMaskIntoConstraints = false
-        questionLabel.text = "A + 3"
         questionLabel.textAlignment = .center
         questionLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle).withSize(125)
         view.addSubview(questionLabel)
@@ -86,6 +86,8 @@ class QuizViewController: UIViewController {
             submit.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             submit.centerXAnchor.constraint(equalTo: view.readableContentGuide.centerXAnchor)
         ])
+
+        setUp(for: engine.generate())
     }
 
     @objc private func answerChanged() {
@@ -104,8 +106,28 @@ class QuizViewController: UIViewController {
         answerLabel.text = answerLabel.text?.appending(accidental)
     }
 
+    func setUp(for question: QuizEngine.Question) {
+        questionLabel.text = question.description
+        answerLabel.text = "?"
+        submit.isEnabled = false
+        notes.selectedSegmentIndex = UISegmentedControl.noSegment
+        accidentals.selectedSegmentIndex = UISegmentedControl.noSegment
+    }
+
     @objc private func checkAnswer() {
-        // TODO: Imolement me
+        guard let answer = answerLabel.text, let note = Note(string: answer) else { return }
+
+        if engine.submit(note) {
+            let alert = UIAlertController(title: "Correct!", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "🎉", style: .cancel, handler: { _ in
+                self.setUp(for: self.engine.generate())
+            }))
+            present(alert, animated: true)
+        } else {
+            let alert = UIAlertController(title: "WRONG!", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "😭", style: .cancel, handler: nil))
+            present(alert, animated: true)
+        }
     }
 }
 
