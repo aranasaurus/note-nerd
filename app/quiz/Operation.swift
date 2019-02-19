@@ -21,8 +21,7 @@ enum Operation: CustomStringConvertible {
     case sub(UInt)
 
     static func random() -> Operation {
-        // make the lower numbers happen more often by going over 12 but < 24
-        let n = UInt.random(in: 1..<17)
+        let n = UInt.random(in: 1..<7)
         return Bool.random() ? .add(n) : .sub(n)
     }
 }
