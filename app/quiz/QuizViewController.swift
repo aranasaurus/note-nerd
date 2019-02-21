@@ -13,10 +13,7 @@ class QuizViewController: UIViewController {
     var engine: QuizEngine = QuizEngine()
 
     private let questionLabel: UILabel = UILabel()
-    private let notes: UISegmentedControl = UISegmentedControl()
-    private let accidentals: ToggleableSegmentedControl = ToggleableSegmentedControl()
-    private let answerLabel: UILabel = UILabel()
-    private let submit: UIButton = UIButton(type: .roundedRect)
+    private let answerVC: AnswerViewController = AnswerViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,100 +25,26 @@ class QuizViewController: UIViewController {
         questionLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle).withSize(125)
         questionLabel.adjustsFontSizeToFitWidth = true
         view.addSubview(questionLabel)
+
+        answerVC.delegate = self
+        let answerView = answerVC.view!
+        view.addSubview(answerView)
+        addChild(answerVC)
+        answerVC.didMove(toParent: self)
+
+        answerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             questionLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
             questionLabel.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            questionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 64)
-        ])
+            questionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 64),
 
-        answerLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(answerLabel)
-        answerLabel.font = questionLabel.font.withSize(150)
-        answerLabel.textAlignment = .center
-        answerLabel.textColor = .white
-        answerLabel.text = "?"
-        answerLabel.shadowColor = UIColor(named: "pink")
-        answerLabel.shadowOffset = CGSize(width: 3, height: 3)
-
-        for (i, note) in "ABCDEFG".map(String.init).enumerated() {
-            notes.insertSegment(withTitle: note, at: i, animated: false)
-        }
-        notes.translatesAutoresizingMaskIntoConstraints = false
-        notes.tintColor = UIColor(named: "pink")
-        notes.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 48)], for: .normal)
-        notes.addTarget(self, action: #selector(answerChanged), for: .valueChanged)
-        view.addSubview(notes)
-
-        for (i, acc) in "♭♯".map(String.init).enumerated() {
-            accidentals.insertSegment(withTitle: acc, at: i, animated: false)
-        }
-        accidentals.translatesAutoresizingMaskIntoConstraints = false
-        accidentals.tintColor = UIColor(named: "pink")
-        accidentals.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 30)], for: .normal)
-        accidentals.addTarget(self, action: #selector(answerChanged), for: .valueChanged)
-        view.addSubview(accidentals)
-
-        submit.translatesAutoresizingMaskIntoConstraints = false
-        submit.setTitle("GO!", for: .normal)
-        submit.setTitleColor(.white, for: .normal)
-        submit.setTitleColor(view.backgroundColor, for: .disabled)
-        submit.titleLabel?.font = UIFont.boldSystemFont(ofSize: 60)
-        submit.setTitleShadowColor(UIColor(named: "pink"), for: .normal)
-        submit.setTitleShadowColor(view.backgroundColor, for: .disabled)
-        submit.titleLabel?.shadowOffset = CGSize(width: 3, height: 3)
-        submit.addTarget(self, action: #selector(checkAnswer), for: .touchUpInside)
-        submit.isEnabled = false
-        view.addSubview(submit)
-
-        NSLayoutConstraint.activate([
-            answerLabel.topAnchor.constraint(equalTo: view.readableContentGuide.centerYAnchor, constant: 8),
-            answerLabel.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            answerLabel.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-
-            notes.topAnchor.constraint(equalTo: answerLabel.bottomAnchor, constant: 32),
-            notes.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            notes.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            notes.heightAnchor.constraint(equalToConstant: 56),
-
-            accidentals.topAnchor.constraint(equalTo: notes.bottomAnchor, constant: 8),
-            accidentals.leadingAnchor.constraint(equalTo: notes.leadingAnchor),
-            accidentals.trailingAnchor.constraint(equalTo: notes.trailingAnchor),
-            accidentals.heightAnchor.constraint(equalTo: notes.heightAnchor, multiplier: 0.66),
-
-            submit.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-            submit.centerXAnchor.constraint(equalTo: view.readableContentGuide.centerXAnchor)
+            answerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            answerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            answerView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
+            answerView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor)
         ])
 
         nextQuestion()
-    }
-
-    @objc private func answerChanged() {
-        guard notes.selectedSegmentIndex != UISegmentedControl.noSegment else {
-            answerLabel.text = "?"
-            submit.isEnabled = false
-            return
-        }
-        submit.isEnabled = true
-        answerLabel.text = notes.titleForSegment(at: notes.selectedSegmentIndex)
-
-        defer {
-            if answerLabel.text!.starts(with: "C") || answerLabel.text!.starts(with: "F") {
-                accidentals.setEnabled(false, forSegmentAt: 0)
-            } else {
-                accidentals.setEnabled(true, forSegmentAt: 0)
-            }
-            if answerLabel.text!.starts(with: "B") || answerLabel.text!.starts(with: "E") {
-                accidentals.setEnabled(false, forSegmentAt: 1)
-            } else {
-                accidentals.setEnabled(true, forSegmentAt: 1)
-            }
-        }
-
-        guard accidentals.selectedSegmentIndex != UISegmentedControl.noSegment,
-            let accidental = accidentals.titleForSegment(at: accidentals.selectedSegmentIndex)
-            else { return }
-
-        answerLabel.text = answerLabel.text?.appending(accidental)
     }
 
     func nextQuestion() {
@@ -129,20 +52,13 @@ class QuizViewController: UIViewController {
         engine.add(question: question)
 
         questionLabel.text = question.description
-        resetAnswerControls()
+        answerVC.reset(for: question)
     }
+}
 
-    func resetAnswerControls() {
-        answerLabel.text = "?"
-        submit.isEnabled = false
-        notes.selectedSegmentIndex = UISegmentedControl.noSegment
-        accidentals.selectedSegmentIndex = UISegmentedControl.noSegment
-        accidentals.setEnabled(true, forSegmentAt: 0)
-        accidentals.setEnabled(true, forSegmentAt: 1)
-    }
-
-    @objc private func checkAnswer() {
-        guard let answer = answerLabel.text, let note = Note(string: answer) else { return }
+extension QuizViewController: AnswerViewControllerDelegate {
+    func answerViewControllerDidSubmit(_ vc: AnswerViewController) {
+        guard let note = vc.selectedNote else { return }
 
         if engine.submit(note) {
             let alert = UIAlertController(title: "Correct!", message: nil, preferredStyle: .alert)
