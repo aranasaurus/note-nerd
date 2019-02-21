@@ -24,7 +24,8 @@ class AnswerViewController: UIViewController {
     }
 
     private let notes: UISegmentedControl = UISegmentedControl()
-    private let accidentalButton: SelectableBGButton = SelectableBGButton()
+    private let sharpButton: SelectableBGButton = SelectableBGButton()
+    private let flatButton: SelectableBGButton = SelectableBGButton()
     private let answerLabel: UILabel = UILabel()
     private let submitButton: UIButton = UIButton()
     
@@ -40,6 +41,10 @@ class AnswerViewController: UIViewController {
         answerLabel.shadowColor = UIColor(named: "pink")
         answerLabel.shadowOffset = CGSize(width: 3, height: 3)
 
+        configure(button: flatButton)
+        flatButton.setTitle(Note.Accidental.flat.rawValue, for: .normal)
+        view.addSubview(flatButton)
+
         for (i, note) in "ABCDEFG".map(String.init).enumerated() {
             notes.insertSegment(withTitle: note, at: i, animated: false)
         }
@@ -49,19 +54,9 @@ class AnswerViewController: UIViewController {
         notes.addTarget(self, action: #selector(updateAnswer), for: .valueChanged)
         view.addSubview(notes)
 
-        accidentalButton.addTarget(self, action: #selector(accidentalButtonTapped), for: .touchUpInside)
-        accidentalButton.translatesAutoresizingMaskIntoConstraints = false
-        accidentalButton.tintColor = UIColor(named: "pink")
-        accidentalButton.setTitleColor(UIColor(named: "pink"), for: .normal)
-        accidentalButton.setTitleColor(UIColor(named: "yellow"), for: .selected)
-        accidentalButton.selectedBGColor = UIColor(named: "pink")
-        accidentalButton.normalBGColor = .clear
-        accidentalButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
-        accidentalButton.layer.borderColor = accidentalButton.tintColor.cgColor
-        accidentalButton.layer.borderWidth = 1
-        accidentalButton.layer.cornerRadius = 4
-        accidentalButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        view.addSubview(accidentalButton)
+        configure(button: sharpButton)
+        sharpButton.setTitle(Note.Accidental.sharp.rawValue, for: .normal)
+        view.addSubview(sharpButton)
 
         submitButton.translatesAutoresizingMaskIntoConstraints = false
         submitButton.setTitle("GO!", for: .normal)
@@ -80,18 +75,23 @@ class AnswerViewController: UIViewController {
             answerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             answerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
+            flatButton.topAnchor.constraint(equalTo: notes.topAnchor),
+            flatButton.bottomAnchor.constraint(equalTo: notes.bottomAnchor),
+            flatButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+
             notes.topAnchor.constraint(equalTo: answerLabel.bottomAnchor, constant: 32),
-            notes.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            notes.trailingAnchor.constraint(equalTo: accidentalButton.leadingAnchor, constant: -8),
+            notes.leadingAnchor.constraint(equalTo: flatButton.trailingAnchor, constant: 4),
+            notes.trailingAnchor.constraint(equalTo: sharpButton.leadingAnchor, constant: -4),
             notes.heightAnchor.constraint(equalToConstant: 56),
 
-            accidentalButton.topAnchor.constraint(equalTo: notes.topAnchor),
-            accidentalButton.bottomAnchor.constraint(equalTo: notes.bottomAnchor),
-            accidentalButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sharpButton.topAnchor.constraint(equalTo: notes.topAnchor),
+            sharpButton.bottomAnchor.constraint(equalTo: notes.bottomAnchor),
+            sharpButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
             submitButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             submitButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+
         updateForSelectedNote()
     }
 
@@ -105,8 +105,12 @@ class AnswerViewController: UIViewController {
         delegate?.answerViewControllerDidSubmit(self)
     }
 
-    @objc private func accidentalButtonTapped() {
-        accidentalButton.isSelected.toggle()
+    @objc private func accidentalButtonTapped(_ sender: UIButton) {
+        sender.isSelected.toggle()
+        if sender.isSelected {
+            let button = sender == sharpButton ? flatButton : sharpButton
+            button.isSelected = false
+        }
         updateAnswer()
     }
 
@@ -118,21 +122,38 @@ class AnswerViewController: UIViewController {
                 return
         }
 
-        if accidentalButton.isSelected, let accidental = accidentalButton.titleLabel?.text {
-            selectedNote = Note(string: root + accidental)
-        } else {
-            selectedNote = Note(string: root)
+        var noteString = root
+        if flatButton.isSelected, let accidental = flatButton.titleLabel?.text {
+            noteString.append(accidental)
+        } else if sharpButton.isSelected, let accidental = sharpButton.titleLabel?.text {
+            noteString.append(accidental)
         }
+        selectedNote = Note(string: noteString)
     }
 
     private func updateForSelectedNote() {
         answerLabel.text = selectedNote?.name ?? "?"
-        accidentalButton.setTitle(ascending ? Note.Accidental.sharp.rawValue : Note.Accidental.flat.rawValue, for: .normal)
         if selectedNote == nil {
             notes.selectedSegmentIndex = UISegmentedControl.noSegment
-            accidentalButton.isSelected = false
+            sharpButton.isSelected = false
+            flatButton.isSelected = false
         }
         submitButton.isEnabled = selectedNote != nil
+    }
+
+    private func configure(button: SelectableBGButton) {
+        button.addTarget(self, action: #selector(accidentalButtonTapped(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor(named: "pink")
+        button.setTitleColor(UIColor(named: "pink"), for: .normal)
+        button.setTitleColor(UIColor(named: "yellow"), for: .selected)
+        button.selectedBGColor = UIColor(named: "pink")
+        button.normalBGColor = .clear
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        button.layer.borderColor = button.tintColor.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 4
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 }
 
